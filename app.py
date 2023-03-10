@@ -10,6 +10,11 @@ from random import randrange
 from threading import Event
 from pynput.keyboard import Key,Controller
 
+from utils.DragManager import DragManager
+from utils import buttonUtils
+
+dnd = DragManager()
+
 mixer.init()
 
 class camThread(threading.Thread):
@@ -351,6 +356,9 @@ class Window(Tk):
 
         self.btnFan2 = self.btn_father.btn(self.img_father.vent, self.img_father.vent_active, lambda: self.loop.create_task(self.fan(self.btnFan2, 0)), 0)
 
+        #button for to turn on edit mode
+        self.editButton = Button(text = "edit", command = lambda: [dnd.change_edit_mode(), buttonUtils.changeButonText(self.editButton, "edit", "stop editing")])
+
         self.btnCam1.place(x=560, y=40)
         self.btnDoor1.place(x=615, y=40)
         self.btnLight1.place(x=670, y=40)
@@ -418,8 +426,74 @@ class Window(Tk):
         self.btnAlarm8.place(x=462, y=110)
         self.btnAlarm9.place(x=615, y=400)
 
+        self.editButton.place(x=550,y=550)
+
         self.cams = [self.btnCam6,self.btnCam5, self.btnCam4, self.btnCam3, self.btnCam2, self.btnCam1, self.btnCam7, self.btnCam8]
         self.smokes = [self.btnSmoke5, self.btnSmoke4, self.btnSmoke3, self.btnSmoke2, self.btnSmoke1, self.btnSmoke6, self.btnSmoke7]
+
+        # array of all buttons
+        #TODO: add all buttons
+        self.buttons = [
+            self.btnCam1,
+            self.btnDoor1,
+            self.btnLight1,
+            self.btnAlarm1,
+            self.btnPanel1,
+            self.btnSmoke1,
+            self.btnFire1,
+            self.btnCam2,
+            self.btnDoor2,
+            self.btnLight2,
+            self.btnAlarm2,
+            self.btnSmoke2,
+            self.btnFire2,
+            self.btnCam3,
+            self.btnDoor3,
+            self.btnLight3,
+            self.btnAlarm3,
+            self.btnSmoke3,
+            self.btnFire3,
+            self.btnCam4,
+            self.btnDoor4,
+            self.btnLight4,
+            self.btnAlarm4,
+            self.btnSmoke4,
+            self.btnFire4,
+            self.btnCam5,
+            self.btnDoor5,
+            self.btnLight5,
+            self.btnAlarm5,
+            self.btnSmoke5,
+            self.btnFire5,
+            self.btnCam6,
+            self.btnDoor8,
+            self.btnLight8,
+            self.btnAlarm6,
+            self.btnSmoke6,
+            self.btnFire6,
+            self.btnCam7,
+            self.btnFan2,
+            self.btnLight9,
+            self.btnAlarm7,
+            self.btnSmoke7,
+            self.btnFire7,
+            self.btnDoor6,
+            self.btnLight6,
+            self.btnEmergency,
+            self.btnLight11,
+            self.btnLight7,
+            self.btnDoor7,
+            self.btnAlarm8,
+            self.btnAlarm9,
+            self.btnFan1,
+            self.btnLight10,
+        ]
+
+
+        for button in self.buttons:
+            dnd.add_dragable(button)
+
+
     def smokeSerial(self, param1, time = 5000):
         string = "<SMOKE" + "\0" + str(param1) + "\0" + str(time) + ">"
         print(string)
