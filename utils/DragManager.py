@@ -1,6 +1,7 @@
 class DragManager():
-    def __init__(self):
+    def __init__(self, root):
         self.edit_mode = False
+        self.root = root
 
     def add_dragable(self, widget):
         widget.bind("<ButtonPress-1>", self.on_start)
@@ -29,13 +30,15 @@ class DragManager():
     def on_drop(self, event):
         # find the widget under the cursor
         if (self.edit_mode):
-            x, y = event.widget.winfo_pointerxy()
-            target = event.widget.winfo_containing(x, y)
-            try:
-                target.configure(image=event.widget.cget("image"))
-                event.widget["state"] = "active"
-            except:
-                pass
+            x = event.x_root - self.root.winfo_rootx()
+            y = event.y_root - self.root.winfo_rooty()
+        
+            # Here grid_location() method is used to
+            # retrieve the relative position on the
+            # parent widget in column and row
+            z = self.root.grid_location(x, y)
+            event.widget.grid(column=z[0], row=z[1])
+            event.widget["state"] = "active"
 
     def change_edit_mode(self):
         if self.edit_mode == True:

@@ -13,7 +13,6 @@ from pynput.keyboard import Key,Controller
 from utils.DragManager import DragManager
 from utils import buttonUtils
 
-dnd = DragManager()
 
 mixer.init()
 
@@ -190,6 +189,10 @@ class Window(Tk):
         self.root.config(background='#ffffff')
         self.keyboard = Controller()
         self.root.geometry("%dx%d" % (1024, 600))
+        # all buton sizes must be equal for correct grid
+        self.buttonWidth = 52
+        self.buttonHeight = 52
+
         self.arduino = serial.Serial(port='COM9', baudrate=57600)
         # while True:
         #     id = input('id')
@@ -200,6 +203,8 @@ class Window(Tk):
         #     data = self.arduino.read_all()
         #     print(data.decode())
         #     self.arduino.write(bytes(string, 'utf-8'))
+
+        dnd = DragManager(self.root)
 
         self.app_backround = ImageTk.PhotoImage(Image.open("img/back.jpg").resize((1024, 550)))
         self.label1 = Label(self.root, image=self.app_backround, background='#ffffff', padx=50, pady=50)
@@ -351,13 +356,28 @@ class Window(Tk):
                                                  lambda: self.loop.create_task(self.volumeDown()), 0)
 
         self.btnFan1 = self.btn_father.btn(self.img_father.vent, self.img_father.vent_active, lambda: self.loop.create_task(self.fan(self.btnFan1, 1)), 0)
-        self.btnFan1.place(x=360, y=110)
-        self.btnLight10.place(x=410, y=110)
+
+        # updating root to get width and height of root
+        self.root.update()
+
+        # set columns and rows size to size of button
+        columnsSize = int(self.root.winfo_width() / self.buttonWidth)
+        rowsSize = int(self.root.winfo_height() / self.buttonHeight)
+
+        # set minsize of row and cloumn to size of button
+        for i in range(columnsSize):
+            self.root.grid_columnconfigure(i, minsize=self.buttonWidth)
+
+        for j in range(rowsSize):
+            self.root.grid_rowconfigure(j, minsize=self.buttonHeight)
 
         self.btnFan2 = self.btn_father.btn(self.img_father.vent, self.img_father.vent_active, lambda: self.loop.create_task(self.fan(self.btnFan2, 0)), 0)
 
         #button for to turn on edit mode
         self.editButton = Button(text = "edit", command = lambda: [dnd.change_edit_mode(), buttonUtils.changeButonText(self.editButton, "edit", "stop editing")])
+
+        self.btnFan1.place(x=360, y=110)
+        self.btnLight10.place(x=410, y=110)
 
         self.btnCam1.place(x=560, y=40)
         self.btnDoor1.place(x=615, y=40)
@@ -432,7 +452,6 @@ class Window(Tk):
         self.smokes = [self.btnSmoke5, self.btnSmoke4, self.btnSmoke3, self.btnSmoke2, self.btnSmoke1, self.btnSmoke6, self.btnSmoke7]
 
         # array of all buttons
-        #TODO: add all buttons
         self.buttons = [
             self.btnCam1,
             self.btnDoor1,
