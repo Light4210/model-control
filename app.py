@@ -264,11 +264,12 @@ class Window(Tk):
         for j in range(rowsSize):
             self.root.grid_rowconfigure(j, minsize=self.buttonHeight)
 
-        # self.cams = [self.btnCam6,self.btnCam5, self.btnCam4, self.btnCam3, self.btnCam2, self.btnCam1, self.btnCam7, self.btnCam8]
-        # self.smokes = [self.btnSmoke5, self.btnSmoke4, self.btnSmoke3, self.btnSmoke2, self.btnSmoke1, self.btnSmoke6, self.btnSmoke7]
-
         self.buttonsInfo = json.loads(db.getButtonsDB())
         buttonUtils.createButtons(self)
+        
+        # smokes and cams buttons in arrays for correct functions working
+        self.smokes = [button for button in self.buttons if button.imgPassiveName == "smoke"]
+        self.cams = [button for button in self.buttons if button.imgPassiveName == "cam"]
 
         buttonUtils.placeInterfaceButtons(self)
 

@@ -113,6 +113,7 @@ def createButton(self, id, column, row, imgPassiveName, imgActiveName, commandIn
                 "The 'commandInfo' dictionary must contain up to 3 arguments")
 
         button.id = id
+        button.imgPassiveName = imgPassiveName
         self.buttons.append(button)
         button.grid(column=column, row=row)
         self.dnd.add_dragable(button)
