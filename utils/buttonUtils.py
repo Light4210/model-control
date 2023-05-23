@@ -120,6 +120,22 @@ def createButton(self, id, column, row, imgPassiveName, imgActiveName, commandIn
     except Exception as e:
         print("Error: ", e)
 
+def deleteButton(self, buttonID):
+    selectedButton = None
+    
+    for button in self.buttons:
+        if button.id == buttonID:
+            selectedButton = self.buttons.pop(self.buttons.index(button))
+            # also delete from smokes or cams arrays if button.passiveImgName is smoke or cam
+            if selectedButton.imgPassiveName == "smoke":
+                self.smokes.remove(button)
+            elif selectedButton.imgPassiveName == "cam":
+                self.cams.remove(button)
+            
+            break  # Exit the loop once the button is found and deleted
+    
+    if selectedButton:
+        selectedButton.destroy()
 
 def placeButtons(self):
     for button in self.buttons:

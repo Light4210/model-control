@@ -13,6 +13,7 @@ import json
 
 from utils.DragManager import DragManager
 from utils import buttonUtils
+from utils import windowUtils
 import utils.database as db
 
 mixer.init()
@@ -273,9 +274,11 @@ class Window(Tk):
 
         buttonUtils.placeInterfaceButtons(self)
 
+        windowUtils.createMenu(self)
+
         #button for to turn on edit mode and save changes
         self.editButton = Button(text="edit", command=lambda: [self.dnd.change_edit_mode(), buttonUtils.changeButonText(
-            self.editButton, "edit", "save"), db.saveChagnesDB(buttons=self.buttons) if self.editButton["text"] == "edit" else None])
+            self.editButton, "edit", "save"), db.saveChangesToDb(buttons=self.buttons) if self.editButton["text"] == "edit" else None])
         self.editButton.place(x=550, y=550)
 
     def smokeSerial(self, param1, time = 5000):

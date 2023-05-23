@@ -31,7 +31,11 @@ def adddButtonsDB(buttons):
         cursor.execute("INSERT INTO buttons (id, column, row) VALUES (?, ?, ?);", (str(id), column, row))
         conn.commit()
 
-def saveChagnesDB(buttons):
+def saveChangesToDb(buttons):
+    updateButtons(buttons)
+    deleteButtonsNotInList(buttons)
+
+def updateButtons(buttons):
     for button in buttons:
         id = button.id
         info = button.grid_info()
@@ -40,7 +44,17 @@ def saveChagnesDB(buttons):
 
         cursor.execute('UPDATE buttons SET column=?, row=? WHERE id=? AND (column != ? OR row != ?)',
                     (column, row, id, column, row))
+
+def deleteButtonsNotInList(buttons):
+    buttonIds = fetchButtonIdsFromDb()
+    for buttonId in buttonIds:
+        if not any(button.id == buttonId for button in buttons):
+            cursor.execute("DELETE FROM buttons WHERE id=?", (buttonId,))
     conn.commit()
+
+def fetchButtonIdsFromDb():
+    cursor.execute("SELECT id FROM buttons")
+    return [row[0] for row in cursor.fetchall()]
 
 # returns buttons info in json format
 def getButtonsDB():
