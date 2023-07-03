@@ -1,4 +1,5 @@
 import json
+import uuid
 
 import utils.database as db
 
@@ -7,6 +8,47 @@ def changeButonText(button, text1, text2):
         button['text'] = text2
     else:
         button['text'] = text1
+
+def addButton(self, type, column, row, index):
+    id = str(uuid.uuid4())
+    if type == 'alarm':
+        createButton(self, id, column, row, 'alarm', 'alarm_active', {'alarm': [int(index)], 'sound': []}, 0)
+        db.addButtonDB(column, row, 'alarm', 'alarm_active', {'alarm': [int(index)], 'sound': []}, 0, id)
+    elif type == 'light':
+        createButton(self, id, column, row, 'light', 'light_active', {'light': [int(index)]}, 1)
+        db.addButtonDB(column, row, 'light', 'light_active', {'light': [int(index)]}, 1, id)
+    elif type == 'smoke':
+        createButton(self, id, column, row, 'smoke', 'smoke_active', {'smoke': [int(index)]}, 0)
+        db.addButtonDB(column, row, 'smoke', 'smoke_active', {'smoke': [int(index)]}, 0, id)
+    elif type == 'fireSingle':
+        createButton(self, id, column, row, 'fire', 'fire_active', {'fireSingle': [int(index)]}, 0)
+        db.addButtonDB(column, row, 'fire', 'fire_active', {'fireSingle': [int(index)]}, 0, id)
+    elif type == 'door': 
+        createButton(self, id, column, row, 'door', 'door_active', {'door': [int(index)]}, 0)
+        db.addButtonDB(column, row, 'door', 'door_active', {'door': [int(index)]}, 0, id)
+    elif type == 'panel':
+        createButton(self, id, column, row, 'panel', 'panel_active', {'serverBlink': []}, 1)
+        db.addButtonDB(15, 1, 'panel', 'panel_active', {'serverBlink': []}, 1, id)
+    elif type == 'cam':
+        createButton(self, id, column, row, 'cam', 'cam_active', {'camEnable': [int(index)]}, 0)
+        db.addButtonDB(column, row, 'cam', 'cam_active', {'camEnable': [int(index)]}, 0, id)
+    elif type == 'emergency':
+        createButton(self, id, column, row, 'emergency_active', 'emergency', {'emergency': []}, 0)
+        db.addButtonDB(column, row, 'emergency_active', 'emergency', {'emergency': []}, 0, id)
+    elif type == 'vent':
+        createButton(self, id, column, row, 'vent', 'vent_active', {'fan': [int(index)]}, 0)
+        db.addButtonDB(column, row, 'vent', 'vent_active', {'fan': [int(index)]}, 0, id)
+    elif type == 'led':
+        createButton(self, id, column, row, 'led', 'led_active', {'emergencyLight': []}, 0)
+        db.addButtonDB(column, row, 'led', 'led_active', {'emergencyLight': []}, 0, id)
+    elif type == 'fireFighter':
+        indexes = index.split(', ')
+        createButton(self, id, column, row, 'alarm', 'alarm_active', {'alarm': [int(indexes[0])], 'alarm': [int(indexes[1])], 'fireFighterSound': []}, 0)
+        db.addButtonDB(column, row, 'alarm', 'alarm_active', {'alarm': [int(indexes[0])], 'alarm': [int(indexes[1])], 'fireFighterSound': []}, 0, id)
+    elif type == 'fire':
+        indexes = index.split(', ')
+        createButton(self, id, column, row, 'fire', 'fire_active', {'fire': [int(indexes[0]), int(indexes[1])]}, 0)
+        db.addButtonDB(column, row, 'fire', 'fire_active', {'fire': [int(indexes[0]), int(indexes[1])]}, 0, id)
 
 # function to fill database with buttons
 def fillButtonsDB():
@@ -153,3 +195,6 @@ def placeInterfaceButtons(self):
     self.ekosystem.place(x=100, y=300)
     self.line1.place(x=350, y=365)
     self.line2.place(x=350, y=185)
+
+    if self.dnd.editing_on():
+        self.addingButton.place(x=600, y=550)

@@ -14,8 +14,10 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS buttons
                    command TEXT NOT NULL,
                    status INTEGER NOT NULL)''')
 
-def addButtonDB(column, row, imgPassiveName, imgActiveName, commandInfo, status):
-    id = str(uuid.uuid4())
+def addButtonDB(column, row, imgPassiveName, imgActiveName, commandInfo, status, id=None):
+    if id == None:
+        id = str(uuid.uuid4())
+
     # converting command from dict to json
     commandJson = json.dumps(commandInfo)
     cursor.execute("INSERT INTO buttons (id, column, row, img_passive, img_active, command, status) VALUES (?, ?, ?, ?, ?, ?, ?);", (id, column, row, imgPassiveName, imgActiveName, commandJson, status))

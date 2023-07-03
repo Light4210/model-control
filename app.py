@@ -276,10 +276,20 @@ class Window(Tk):
 
         windowUtils.createMenu(self)
 
-        #button for to turn on edit mode and save changes
+        # button for to turn on edit mode and save changes
         self.editButton = Button(text="edit", command=lambda: [self.dnd.change_edit_mode(), buttonUtils.changeButonText(
-            self.editButton, "edit", "save"), db.saveChangesToDb(buttons=self.buttons) if self.editButton["text"] == "edit" else None])
+            self.editButton, "edit", "save"), db.saveChangesToDb(buttons=self.buttons) if self.editButton["text"] == "edit" else None, showAddButton(self)])
         self.editButton.place(x=550, y=550)
+        
+        # button for adding new buttons, visible only in edit mode
+        self.addButton = Button(text="add button", command=lambda: windowUtils.showDialog(self))
+
+        def showAddButton(self):
+            if self.dnd.editing_on():
+                self.addButton.place(x=600, y=550)
+            else:
+                self.addButton.place_forget()
+
 
     def smokeSerial(self, param1, time = 5000):
         string = "<SMOKE" + "\0" + str(param1) + "\0" + str(time) + ">"
