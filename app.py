@@ -38,8 +38,8 @@ def camPreview(previewName, camID, event):
     while rval:
         cv2.namedWindow(previewName, cv2.WND_PROP_FULLSCREEN)
         # cv2.setWindowProperty(previewName, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-        cv2.setWindowProperty(previewName, 1920, 600)
-        cv2.moveWindow(previewName, 1920, 0)
+        cv2.setWindowProperty(previewName, 1024, 600)
+        cv2.moveWindow(previewName, 1024, 0)
         cv2.imshow(previewName, frame)
         rval, frame = cam.read()
         key = cv2.waitKey(20)
