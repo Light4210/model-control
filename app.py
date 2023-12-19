@@ -185,7 +185,7 @@ class Window(Tk):
 
         self.roomKeys = {
             self.room1: {
-                self.camera: 0,
+                self.camera: 4,
                 self.generalLight: 40,
                 self.roomLight: 49,
                 self.smokeName: 8,
@@ -197,7 +197,7 @@ class Window(Tk):
                 self.action2: 13
             },
             self.room2: {
-                self.camera: 1,
+                self.camera: 5,
                 self.generalLight: 41,
                 self.roomLight: 18,
                 self.smokeName: 7,
@@ -223,7 +223,7 @@ class Window(Tk):
                 self.action2: 21
             },
             self.room4: {
-                self.camera: 3,
+                self.camera: 4,
                 self.generalLight: 43,
                 self.roomLight: 51,
                 self.smokeName: 6,
@@ -236,7 +236,7 @@ class Window(Tk):
                 self.action1: 27,
             },
             self.room5: {
-                self.camera: 4,
+                self.camera: 1,
                 self.generalLight: 44,
                 self.roomLight: 52,
                 self.smokeName: 10,
@@ -246,7 +246,7 @@ class Window(Tk):
                 self.action1: 29,
             },
             self.room6: {
-                self.camera: 5,
+                self.camera: 6,
                 self.generalLight: 45,
                 self.roomLight: 53,
                 self.smokeName: 9,
@@ -269,7 +269,7 @@ class Window(Tk):
                 self.roomLight: 36,
             },
             self.room10: {
-                self.camera: 6,
+                self.camera: 0,
                 self.generalLight: 54,
                 self.smokeName: 11,
                 self.fireRed: 38,
@@ -653,7 +653,7 @@ class Window(Tk):
 
     async  def scenary_action_1(self, btn):
         self.change_img(btn)
-        self.loop.create_task(self.camEnable(4,''))
+        self.loop.create_task(self.camEnable(self.roomKeys[self.room6][self.camera],''))
         self.blackout()
         for scen in self.scenaries:
             scen["state"]="disable"
@@ -701,7 +701,7 @@ class Window(Tk):
 
     async def scenary_action_2(self, btn):
         self.change_img(btn)
-        self.loop.create_task(self.camEnable(4, ''))
+        self.loop.create_task(self.camEnable(self.roomKeys[self.room2][self.camera], ''))
         self.blackout()
         for scen in self.scenaries:
             scen["state"] = "disable"
@@ -755,7 +755,7 @@ class Window(Tk):
 
     async def scenary_action_3(self, btn):
         self.change_img(btn)
-        self.loop.create_task(self.camEnable(4, ''))
+        self.loop.create_task(self.camEnable(self.roomKeys[self.room5][self.camera], ''))
         self.blackout()
         for scen in self.scenaries:
             scen["state"] = "disable"
@@ -807,7 +807,7 @@ class Window(Tk):
 
     async def scenary_action_4(self, btn):
         self.change_img(btn)
-        self.loop.create_task(self.camEnable(4, ''))
+        self.loop.create_task(self.camEnable(self.roomKeys[self.room4][self.camera], ''))
         self.blackout()
         for scen in self.scenaries:
             scen["state"] = "disable"
@@ -854,7 +854,7 @@ class Window(Tk):
 
     async def scenary_action_5(self, btn):
         self.change_img(btn)
-        self.loop.create_task(self.camEnable(4, ''))
+        self.loop.create_task(self.camEnable(self.roomKeys[self.room1][self.camera], ''))
         self.blackout()
         for scen in self.scenaries:
             scen["state"] = "disable"
@@ -903,7 +903,7 @@ class Window(Tk):
 
     async  def scenary_action_6(self, btn):
         self.change_img(btn)
-        self.loop.create_task(self.camEnable(4,''))
+        self.loop.create_task(self.camEnable(self.roomKeys[self.room10][self.camera],''))
         self.blackout()
         for scen in self.scenaries:
             scen["state"]="disable"
