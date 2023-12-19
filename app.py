@@ -281,7 +281,7 @@ class Window(Tk):
         self.alarmStatus = 0
         self.volume = 50;
         self.keyboard = Controller()
-        self.arduino = serial.Serial(port='COM1', baudrate=57600)
+        self.arduino = serial.Serial(port='COM9', baudrate=57600)
         self.loop = loop
         self.name = 'frame'
         self.status = False
