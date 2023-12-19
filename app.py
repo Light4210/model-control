@@ -185,7 +185,7 @@ class Window(Tk):
 
         self.roomKeys = {
             self.room1: {
-                self.camera: 3,
+                self.camera: 1,
                 self.generalLight: 40,
                 self.roomLight: 49,
                 self.smokeName: 8,
@@ -236,7 +236,7 @@ class Window(Tk):
                 self.action1: 27,
             },
             self.room5: {
-                self.camera: 1,
+                self.camera: 3,
                 self.generalLight: 44,
                 self.roomLight: 52,
                 self.smokeName: 10,
