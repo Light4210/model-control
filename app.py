@@ -281,7 +281,7 @@ class Window(Tk):
         self.alarmStatus = 0
         self.volume = 50;
         self.keyboard = Controller()
-        self.arduino = serial.Serial(port='COM9', baudrate=57600)
+        # self.arduino = serial.Serial(port='COM9', baudrate=57600)
         self.loop = loop
         self.name = 'frame'
         self.status = False
@@ -369,17 +369,17 @@ class Window(Tk):
                                              lambda: self.loop.create_task(self.smoke(self.roomKeys[self.room2][self.smokeName], self.btnSmoke5)), 0)
 
         self.btnCam1 = self.btn_father.btn(self.img_father.cam, self.img_father.cam_active,
-                                           lambda: self.loop.create_task(self.camEnable(self.roomKeys[self.room1][self.camera], self.btnCam1)), 0)
+                                           lambda: self.loop.create_task(self.camEnable(self.roomKeys[self.room5][self.camera], self.btnCam1)), 0)
         self.btnCam2 = self.btn_father.btn(self.img_father.cam, self.img_father.cam_active,
-                                           lambda: self.loop.create_task(self.camEnable(self.roomKeys[self.room2][self.camera], self.btnCam2)), 0)
+                                           lambda: self.loop.create_task(self.camEnable(self.roomKeys[self.room6][self.camera], self.btnCam2)), 0)
         self.btnCam3 = self.btn_father.btn(self.img_father.cam, self.img_father.cam_active,
                                            lambda: self.loop.create_task(self.camEnable(self.roomKeys[self.room3][self.camera]  , self.btnCam3)), 0)
         self.btnCam4 = self.btn_father.btn(self.img_father.cam, self.img_father.cam_active,
                                            lambda: self.loop.create_task(self.camEnable(self.roomKeys[self.room4][self.camera], self.btnCam4)), 0)
         self.btnCam5 = self.btn_father.btn(self.img_father.cam, self.img_father.cam_active,
-                                           lambda: self.loop.create_task(self.camEnable(self.roomKeys[self.room5][self.camera], self.btnCam5)), 0)
+                                           lambda: self.loop.create_task(self.camEnable(self.roomKeys[self.room1][self.camera], self.btnCam5)), 0)
         self.btnCam6 = self.btn_father.btn(self.img_father.cam, self.img_father.cam_active,
-                                           lambda: self.loop.create_task(self.camEnable(self.roomKeys[self.room6][self.camera], self.btnCam6)), 0)
+                                           lambda: self.loop.create_task(self.camEnable(self.roomKeys[self.room2][self.camera], self.btnCam6)), 0)
         self.btnCam7 = self.btn_father.btn(self.img_father.cam, self.img_father.cam_active,
                                            lambda: self.loop.create_task(self.camEnable(self.roomKeys[self.room10][self.camera], self.btnCam7)), 0)
 
