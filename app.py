@@ -493,7 +493,7 @@ class Window(Tk):
         self.btnSmoke0.place(x=350, y=212)  # floor 3 l
         self.btnSmoke1.place(x=860, y=212)  # floor 3 l
         self.btnSmoke2.place(x=80, y=450)  # floor 3 l
-        self.btnSmoke3.place(x=760, y=353)  # floor 3 l
+        self.btnSmoke3.place(x=860, y=353)  # floor 3 l
         self.btnSmoke4.place(x=350, y=505)  # floor 3 l
         self.btnSmoke5.place(x=860, y=505)  # floor 3 l
 
