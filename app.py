@@ -362,7 +362,7 @@ class Window(Tk):
         self.btnSmoke2 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
                                              lambda: self.loop.create_task(self.smoke(self.roomKeys[self.room10][self.smokeName], self.btnSmoke2)), 0)
         self.btnSmoke3 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
-                                             lambda: self.loop.create_task(self.smoke(self.roomKeys[self.room6][self.smokeName], self.btnSmoke3)), 0)
+                                             lambda: self.loop.create_task(self.smoke(self.roomKeys[self.room4][self.smokeName], self.btnSmoke3)), 0)
         self.btnSmoke4 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
                                              lambda: self.loop.create_task(self.smoke(self.roomKeys[self.room1][self.smokeName], self.btnSmoke4)), 0)
         self.btnSmoke5 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
@@ -493,7 +493,7 @@ class Window(Tk):
         self.btnSmoke0.place(x=350, y=212)  # floor 3 l
         self.btnSmoke1.place(x=860, y=212)  # floor 3 l
         self.btnSmoke2.place(x=80, y=450)  # floor 3 l
-        self.btnSmoke3.place(x=860, y=353)  # floor 3 l
+        self.btnSmoke3.place(x=760, y=353)  # floor 3 l
         self.btnSmoke4.place(x=350, y=505)  # floor 3 l
         self.btnSmoke5.place(x=860, y=505)  # floor 3 l
 
