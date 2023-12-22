@@ -360,7 +360,7 @@ class Window(Tk):
         self.btnSmoke1 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
                                              lambda: self.loop.create_task(self.smoke(self.roomKeys[self.room6][self.smokeName], self.btnSmoke1)), 0)
         self.btnSmoke2 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
-                                             lambda: self.loop.create_task(self.smoke(self.roomKeys[self.room10][self.smokeName], self.btnSmoke2)), 0)
+                                             lambda: self.loop.create_task(self.smoke(self.roomKeys[self.room10][self.smokeName], self.btnSmoke2, 5000)), 0)
         self.btnSmoke3 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
                                              lambda: self.loop.create_task(self.smoke(self.roomKeys[self.room4][self.smokeName], self.btnSmoke3)), 0)
         self.btnSmoke4 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
@@ -920,7 +920,7 @@ class Window(Tk):
         await asyncio.sleep(3)
         self.fireSerialSingle(self.roomKeys[self.room10][self.action1])
         await asyncio.sleep(5)
-        self.smokeSerial(self.roomKeys[self.room10][self.smokeName])
+        self.smokeSerial(self.roomKeys[self.room10][self.smokeName], 5000)
         await asyncio.sleep(8)
         await self.fireFighterSound()
         await self.alarmFireTruck(self.roomKeys[self.room10][self.fireRed], self.roomKeys[self.room10][self.fireYellow],
@@ -1022,11 +1022,11 @@ class Window(Tk):
         comand = 'FAN' + str(num) + 'OFF' if fan.status == 0 else 'FAN' + str(num) + 'ON'
         self.serialFan(comand)
 
-    async def smoke(self, index, smoke):
+    async def smoke(self, index, smoke, time = 2000):
         self.change_img(smoke)
         for smokeVal in self.smokes:
             smokeVal["state"]="disabled"
-        self.smokeSerial(index)
+        self.smokeSerial(index, time)
         await asyncio.sleep(11)
         self.change_img(smoke)
         for smokeVal in self.smokes:
