@@ -281,7 +281,7 @@ class Window(Tk):
         self.alarmStatus = 0
         self.volume = 50;
         self.keyboard = Controller()
-        self.arduino = serial.Serial(port='COM9', baudrate=57600)
+        # self.arduino = serial.Serial(port='COM9', baudrate=57600)
         self.loop = loop
         self.name = 'frame'
         self.status = False
@@ -424,7 +424,7 @@ class Window(Tk):
         self.btnFirepalce = self.btn_father.btn(self.img_father.fireplace, self.img_father.fireplace_active,
                                                 lambda: self.loop.create_task(self.fire(self.roomKeys[self.room4][self.firePlaceRed], self.roomKeys[self.room4][self.firePlaceYellow], self.btnFirepalce)), 1)
         self.btnTree = self.btn_father.btn(self.img_father.tree, self.img_father.tree_active,
-                                           lambda: self.loop.create_task(self.tree(self.roomKeys[self.room4][self.action1], self.btnTree)), 1)
+                                           lambda: self.loop.create_task(self.fireSingle(self.roomKeys[self.room4][self.action1], self.btnTree)), 1)
 
         self.btnPanel3 = self.btn_father.btn(self.img_father.panel, self.img_father.panel_active,
                                              lambda: self.loop.create_task(self.panel(self.roomKeys[self.room2][self.detection], self.btnPanel3)), 0)
@@ -442,7 +442,7 @@ class Window(Tk):
         self.btnFan2 = self.btn_father.btn(self.img_father.vent, self.img_father.vent_active, lambda: self.loop.create_task(self.fan(2, self.btnFan2)), 0)
         self.btnBalon = self.btn_father.btn(self.img_father.balon, self.img_father.balon_active, lambda: self.loop.create_task(self.light(self.roomKeys[self.room2][self.action1], self.btnBalon)), 0)
         self.btnKotel = self.btn_father.btn(self.img_father.kotel, self.img_father.kotel_active, lambda: self.loop.create_task(self.fireSingle(self.roomKeys[self.room3][self.action2], self.btnKotel)), 1)
-        self.btnHot = self.btn_father.btn(self.img_father.kotel, self.img_father.kotel_active, lambda: self.loop.create_task(self.fireSingle(17, self.btnHot)), 1)
+        self.btnHot = self.btn_father.btn(self.img_father.kotel, self.img_father.kotel_active, lambda: self.loop.create_task(self.fire(self.roomKeys[self.room2][self.firePlaceYellow], self.roomKeys[self.room2][self.firePlaceRed], self.btnHot)), 1)
 
 
 
