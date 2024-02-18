@@ -15,7 +15,15 @@ mixer.init()
 
 siren = mixer.Sound('siren.mp3')
 egg = mixer.Sound('egg.mp3')
-fire = mixer.Sound('fire.mp3')
+fire = mixer.Sound('kotel_fire.mp3')
+
+childFire = mixer.Sound('child_fire.mp3')
+kotelFire = mixer.Sound('kotel_fire.mp3')
+sleepFire = mixer.Sound('sleep_fire.mp3')
+balonFire = mixer.Sound('balon.mp3')
+
+preFire = mixer.Sound('child_pre_fire.mp3')
+spark = mixer.Sound('spark.mp3')
 
 # Create two threads as follows
 
@@ -275,6 +283,14 @@ class Window(Tk):
         self.alarmStatus = 0
         self.eggStatus = 0
         self.fireStatus = 0
+        self.sparkStatus = 0
+
+        self.childFireStatus = 0
+        self.kotelFireStatus = 0
+        self.sleepFireStatus = 0
+        self.balonFireStatus = 0
+        self.preFireStatus = 0
+
         self.fireCount = 0;
         self.volume = 50;
         self.keyboard = Controller()
@@ -287,7 +303,6 @@ class Window(Tk):
         self.keyboard = Controller()
         width = 1024
         height = 600
-        monitors = get_monitors()
         #primary_screen = monitors[1]  # Assuming the primary screen is the first one
 
         # Set the window geometry to open on the primary screen and located on the left
@@ -775,20 +790,26 @@ class Window(Tk):
         await asyncio.sleep(4)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.roomLight], 255)
         await asyncio.sleep(7)
+        await self.soundPreFire()
+        await asyncio.sleep(1)
+        await self.soundChildFire()
+        await asyncio.sleep(1)
         self.fireSerial(self.roomKeys[self.room6][self.fireRed], self.roomKeys[self.room6][self.fireYellow])
         await asyncio.sleep(3)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.roomLight], 0)
         await asyncio.sleep(1)
         self.smokeSerial(self.roomKeys[self.room6][self.smokeName])
         await asyncio.sleep(4)
-        self.blink(self.roomKeys[self.room6][self.signal], 200, 200)
         await self.sound()
+        self.blink(self.roomKeys[self.room6][self.signal], 200, 200)
+        await self.soundPreFire()
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.action1], 0)
         await asyncio.sleep(10)
         self.servo('SERVOOPEN', self.roomKeys[self.room6][self.doorName])
         await asyncio.sleep(.1)
         await self.fan(1, self.btnFan1)
         await asyncio.sleep(10)
+        await self.soundChildFire()
         await self.sound()
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.signal], 0)
@@ -823,6 +844,7 @@ class Window(Tk):
         await asyncio.sleep(1)
         self.fireSerial(self.roomKeys[self.room2][self.firePlaceRed], self.roomKeys[self.room2][self.firePlaceYellow])
         await asyncio.sleep(4)
+        await self.soundKotelFire()
         self.fireSerial(self.roomKeys[self.room2][self.fireRed], self.roomKeys[self.room2][self.fireYellow])
         await asyncio.sleep(4)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room2][self.roomLight], 0)
@@ -832,18 +854,21 @@ class Window(Tk):
         await self.sound()
         self.blink(self.roomKeys[self.room2][self.signal], 200, 200)
         await asyncio.sleep(7)
+        await self.soundBalonFire()
         self.ledSerial('LEDWRITE', self.roomKeys[self.room2][self.action1], 255)
         await asyncio.sleep(.5)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room2][self.action1], 0)
         await asyncio.sleep(.5)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room2][self.action1], 0)
         await asyncio.sleep(10)
+        await self.soundBalonFire()
         self.servo('SERVOOPEN', self.roomKeys[self.room2][self.doorName])
         await asyncio.sleep(1)
         await self.fan(1, self.btnFan1)
         await asyncio.sleep(10)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room2][self.signal], 0)
         await asyncio.sleep(.1)
+        await self.soundKotelFire()
         await self.sound()
         await asyncio.sleep(.5)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room2][self.fireRed], 0)
@@ -876,6 +901,7 @@ class Window(Tk):
         await asyncio.sleep(4)
         self.fireSerialSingle(self.roomKeys[self.room5][self.action1])
         await asyncio.sleep(10)
+        await self.soundSleepFire()
         self.fireSerialSingle(self.roomKeys[self.room5][self.fireRed])
         await asyncio.sleep(2)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room5][self.roomLight], 0)
@@ -890,6 +916,7 @@ class Window(Tk):
         await self.fan(1, self.btnFan1)
         await asyncio.sleep(10)
         await self.sound()
+        await self.soundSleepFire()
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room5][self.signal], 0)
         await asyncio.sleep(.5)
@@ -927,13 +954,64 @@ class Window(Tk):
         else:
             egg.fadeout(1000)
 
-    async def soundFire(self, btn):
+    async def soundFire(self):
         self.fireStatus = not self.fireStatus
         if self.fireStatus == 1:
             fire.play(fade_ms=3000)
             await asyncio.sleep(.1)
         else:
             fire.fadeout(3000)
+
+    async def soundPreFire(self):
+        self.preFireStatus = not self.preFireStatus
+        if self.preFireStatus == 1:
+            preFire.play(fade_ms=3000)
+            await asyncio.sleep(.1)
+        else:
+            preFire.fadeout(3000)
+
+
+    async def soundSleepFire(self):
+        self.sleepFireStatus = not self.sleepFireStatus
+        if self.sleepFireStatus == 1:
+            sleepFire.play(fade_ms=3000)
+            await asyncio.sleep(.1)
+        else:
+            sleepFire.fadeout(3000)
+
+    async def soundChildFire(self):
+        self.childFireStatus = not self.childFireStatus
+        if self.childFireStatus == 1:
+            childFire.play(fade_ms=3000)
+            await asyncio.sleep(.1)
+        else:
+            childFire.fadeout(3000)
+
+    async def soundKotelFire(self):
+        self.kotelFireStatus = not self.kotelFireStatus
+        if self.kotelFireStatus == 1:
+            kotelFire.play(fade_ms=3000)
+            await asyncio.sleep(.1)
+        else:
+            kotelFire.fadeout(3000)
+
+    async def soundBalonFire(self):
+        self.balonFireStatus = not self.balonFireStatus
+        if self.balonFireStatus == 1:
+            balonFire.play()
+            await asyncio.sleep(.1)
+        else:
+            balonFire.fadeout(3000)
+
+
+    async def soundSpark(self):
+        self.sparkStatus = not self.sparkStatus
+        if self.sparkStatus == 1:
+            spark.play()
+            await asyncio.sleep(.1)
+        else:
+            spark.fadeout(3000)
+
 
     async def scenary_action_4(self, btn):
         self.change_img(btn)
@@ -948,14 +1026,19 @@ class Window(Tk):
         await asyncio.sleep(4)
         self.fireSerialSingle(self.roomKeys[self.room4][self.action1])
         await asyncio.sleep(4)
+        await self.soundSpark()
+        await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room4][self.action1], 0)
         await asyncio.sleep(1)
+        await self.soundFire()
         self.fireSerialSingle(self.roomKeys[self.room4][self.fireRed])
         await asyncio.sleep(3)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room4][self.roomLight], 0)
         await asyncio.sleep(1)
         self.smokeSerial(self.roomKeys[self.room4][self.smokeName])
         await asyncio.sleep(4)
+        await self.soundSpark()
+        await asyncio.sleep(.1)
         self.blink(self.roomKeys[self.room4][self.signal], 200, 200)
         await self.sound()
         await asyncio.sleep(10)
@@ -968,6 +1051,8 @@ class Window(Tk):
         self.ledSerial('LEDWRITE', self.roomKeys[self.room4][self.signal], 0)
         await asyncio.sleep(.5)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room4][self.fireRed], 0)
+        await asyncio.sleep(.1)
+        await self.soundFire()
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room4][self.roomLight], 255)
         await asyncio.sleep(25)
@@ -993,8 +1078,11 @@ class Window(Tk):
         await asyncio.sleep(4)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room1][self.roomLight], 255)
         await asyncio.sleep(4)
+        await self.soundEgg()
         self.fireSerialSingle(self.roomKeys[self.room1][self.action1])
         await asyncio.sleep(4)
+        await self.soundEgg()
+        await self.soundKotelFire()
         self.fireSerialSingle(self.roomKeys[self.room1][self.fireRed])
         await asyncio.sleep(3)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room1][self.roomLight], 0)
@@ -1016,6 +1104,7 @@ class Window(Tk):
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room4][self.signal], 0)
         await asyncio.sleep(.5)
+        await self.soundKotelFire()
         self.ledSerial('LEDWRITE', self.roomKeys[self.room1][self.fireRed], 0)
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room1][self.fireYellow], 0)
@@ -1077,7 +1166,6 @@ class Window(Tk):
         self.scenary.config(background='#ffffff')
         width = 1024
         height = 600
-        monitors = get_monitors()
         #primary_screen = monitors[1]  # Assuming the primary screen is the first one
 
         # Set the window geometry to open on the primary screen and located on the left
