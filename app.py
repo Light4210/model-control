@@ -12,6 +12,10 @@ from pynput.keyboard import Key,Controller
 
 mixer.init()
 
+siren = mixer.Sound('siren.mp3')
+egg = mixer.Sound('egg.mp3')
+fire = mixer.Sound('fire.mp3')
+
 # Create two threads as follows
 
 class App:
@@ -266,6 +270,9 @@ class Window(Tk):
             }
         }
         self.alarmStatus = 0
+        self.eggStatus = 0
+        self.fireStatus = 0
+        self.fireCount = 0;
         self.volume = 50;
         self.keyboard = Controller()
         self.arduino = serial.Serial(port='COM9', baudrate=57600)
@@ -792,6 +799,22 @@ class Window(Tk):
             await asyncio.sleep(.1)
         else:
             mixer.music.stop()
+
+    async def soundEgg(self):
+        self.eggStatus = not self.eggStatus
+        if self.eggStatus == 1:
+            egg.play(fade_ms=1000)
+            await asyncio.sleep(.1)
+        else:
+            egg.fadeout(1000)
+
+    async def soundFire(self, btn):
+        self.fireStatus = not self.fireStatus
+        if self.fireStatus == 1:
+            fire.play(fade_ms=3000)
+            await asyncio.sleep(.1)
+        else:
+            fire.fadeout(3000)
 
     async def scenary_action_4(self, btn):
         self.change_img(btn)
