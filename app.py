@@ -1,6 +1,7 @@
 import re
 import subprocess
 import threading
+from collections import defaultdict
 from tkinter import *
 import asyncio
 import time
