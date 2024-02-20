@@ -188,7 +188,7 @@ class Window(Tk):
 
         self.roomKeys = {
             self.room1: {
-                self.camera: self.result_dict["1.1.1"],
+                self.camera: self.result_dict["6.1"],
                 self.generalLight: 40,
                 self.roomLight: 49,
                 self.smokeName: 7,
@@ -214,7 +214,7 @@ class Window(Tk):
                 self.action1: 19,
             },
             self.room3: {
-                self.camera: self.result_dict["1.1.3"],
+                self.camera: self.result_dict["6.2"],
                 self.generalLight: 42,
                 self.roomLight: 50,
                 self.detection: 8,
@@ -226,7 +226,7 @@ class Window(Tk):
                 self.action2: 21
             },
             self.room4: {
-                self.camera: self.result_dict["6.1"],
+                self.camera: self.result_dict["1.1.1"],
                 self.generalLight: 43,
                 self.roomLight: 51,
                 self.smokeName: 6,
@@ -239,7 +239,7 @@ class Window(Tk):
                 self.action1: 27,
             },
             self.room5: {
-                self.camera: self.result_dict["6.2"],
+                self.camera: self.result_dict["1.1.3"],
                 self.generalLight: 44,
                 self.roomLight: 52,
                 self.smokeName: 10,
@@ -260,7 +260,7 @@ class Window(Tk):
                 self.action1: 32,
             },
             self.room7: {
-                self.generalLight: 46,
+                self.generalLight: 48,
                 self.roomLight: 34,
             },
             self.room8: {
@@ -268,7 +268,7 @@ class Window(Tk):
                 self.roomLight: 35,
             },
             self.room9: {
-                self.generalLight: 48,
+                self.generalLight: 46,
                 self.roomLight: 36,
             },
             self.room10: {
@@ -1089,7 +1089,7 @@ class Window(Tk):
         self.ledSerial('LEDWRITE', self.roomKeys[self.room1][self.roomLight], 0)
         await asyncio.sleep(1)
         self.smokeSerial(self.roomKeys[self.room1][self.smokeName])
-        await asyncio.sleep(4)
+        await asyncio.sleep(10)
         self.fireSerialSingle(self.roomKeys[self.room1][self.fireYellow])
         await asyncio.sleep(1)
         self.blink(self.roomKeys[self.room1][self.signal], 200, 200)
@@ -1102,10 +1102,10 @@ class Window(Tk):
         await self.fan(1, self.btnFan1)
         await asyncio.sleep(10)
         await self.sound()
-        await asyncio.sleep(.1)
-        self.ledSerial('LEDWRITE', self.roomKeys[self.room4][self.signal], 0)
         await asyncio.sleep(.5)
         await self.soundKotelFire()
+        self.ledSerial('LEDWRITE', self.roomKeys[self.room1][self.signal], 0)
+        await asyncio.sleep(.5)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room1][self.fireRed], 0)
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room1][self.fireYellow], 0)
