@@ -175,7 +175,7 @@ class Window(Tk):
         matches = pattern.findall(output)
 
         # Create a dictionary with the extracted information
-        self.result_dict = {}
+        self.result_dict = defaultdict(lambda: 'NO_CAMERA_FOUND')
         for match in matches:
             key = match[0]
             value = f"/dev/video{match[1]}"
