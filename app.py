@@ -418,7 +418,7 @@ class Window(Tk):
         self.btnSmoke2 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
                                              lambda: self.loop.create_task(
                                                  self.smoke(self.roomKeys[self.room10][self.smokeName], self.btnSmoke2,
-                                                            5000)), 0)
+                                                            2000)), 0)
         self.btnSmoke3 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
                                              lambda: self.loop.create_task(
                                                  self.smoke(self.roomKeys[self.room4][self.smokeName], self.btnSmoke3)),
@@ -820,7 +820,7 @@ class Window(Tk):
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.fireYellow], 0)
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.roomLight], 255)
-        await asyncio.sleep(25)
+        await asyncio.sleep(40)
         await asyncio.sleep(.5)
         self.servo('SERVOCLOSE', self.roomKeys[self.room6][self.doorName])
         await asyncio.sleep(.5)
@@ -877,7 +877,7 @@ class Window(Tk):
         self.ledSerial('LEDWRITE', self.roomKeys[self.room2][self.fireYellow], 0)
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room2][self.roomLight], 255)
-        await asyncio.sleep(25)
+        await asyncio.sleep(40)
         await asyncio.sleep(.5)
         self.servo('SERVOCLOSE', self.roomKeys[self.room2][self.doorName])
         await asyncio.sleep(.5)
@@ -923,10 +923,8 @@ class Window(Tk):
         await asyncio.sleep(.5)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room5][self.fireRed], 0)
         await asyncio.sleep(.1)
-        self.ledSerial('LEDWRITE', self.roomKeys[self.room5][self.action1], 0)
-        await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room5][self.roomLight], 255)
-        await asyncio.sleep(25)
+        await asyncio.sleep(40)
         await asyncio.sleep(.5)
         self.servo('SERVOCLOSE', self.roomKeys[self.room5][self.doorName])
         await asyncio.sleep(.5)
@@ -1026,6 +1024,8 @@ class Window(Tk):
         self.ledSerial('LEDWRITE', self.roomKeys[self.room4][self.roomLight], 255)
         await asyncio.sleep(4)
         self.fireSerialSingle(self.roomKeys[self.room4][self.action1])
+        await asyncio.sleep(1)
+        self.fireSerial(self.roomKeys[self.room4][self.firePlaceRed], self.roomKeys[self.room4][self.firePlaceYellow])
         await asyncio.sleep(4)
         await self.soundSpark()
         await asyncio.sleep(.1)
@@ -1056,7 +1056,7 @@ class Window(Tk):
         await self.soundFire()
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room4][self.roomLight], 255)
-        await asyncio.sleep(25)
+        await asyncio.sleep(40)
         await asyncio.sleep(.5)
         self.servo('SERVOCLOSE', self.roomKeys[self.room4][self.doorName])
         await asyncio.sleep(.5)
@@ -1111,7 +1111,7 @@ class Window(Tk):
         self.ledSerial('LEDWRITE', self.roomKeys[self.room1][self.fireYellow], 0)
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room1][self.roomLight], 255)
-        await asyncio.sleep(25)
+        await asyncio.sleep(40)
         await asyncio.sleep(.5)
         self.servo('SERVOCLOSE', self.roomKeys[self.room1][self.doorName])
         await asyncio.sleep(.5)
@@ -1151,7 +1151,7 @@ class Window(Tk):
         self.ledSerial('LEDWRITE', self.roomKeys[self.room10][self.fireRed], 0)
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room10][self.fireYellow], 0)
-        await asyncio.sleep(25)
+        await asyncio.sleep(40)
         await asyncio.sleep(.5)
         await self.fan(2, self.btnFan2)
         await asyncio.sleep(.5)
@@ -1243,7 +1243,7 @@ class Window(Tk):
         comand = 'FAN' + str(num) + 'OFF' if fan.status == 0 else 'FAN' + str(num) + 'ON'
         self.serialFan(comand)
 
-    async def smoke(self, index, smoke, time=2000):
+    async def smoke(self, index, smoke, time=1500):
         self.change_img(smoke)
         for smokeVal in self.smokes:
             smokeVal["state"] = "disabled"
