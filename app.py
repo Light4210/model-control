@@ -1,7 +1,4 @@
-import re
-import subprocess
 import threading
-from collections import defaultdict
 from tkinter import *
 import asyncio
 import time
@@ -9,10 +6,23 @@ import serial
 from PIL import ImageTk, Image
 from pygame import mixer
 import cv2
-from pynput.keyboard import Key, Controller
-from subprocess import call
+from random import randrange
+from threading import Event
+from pynput.keyboard import Key,Controller
 
 mixer.init()
+
+class camThread(threading.Thread):
+    def __init__(self, previewName, camID, event):
+        threading.Thread.__init__(self)
+        self.previewName = previewName
+        self.camID = camID
+        self.event = event
+    def run(self):
+        try:
+            camPreview(self.previewName, self.camID, self.event)
+        except:
+            camPreview(self.previewName, self.camID, self.event)
 
 siren = mixer.Sound('siren.mp3')
 egg = mixer.Sound('egg.mp3')
@@ -25,6 +35,24 @@ balonFire = mixer.Sound('balon.mp3')
 
 preFire = mixer.Sound('child_pre_fire.mp3')
 spark = mixer.Sound('spark.mp3')
+
+def camPreview(previewName, camID, event):
+    cam = cv2.VideoCapture(camID, cv2.CAP_DSHOW)
+    cam.set(cv2.CAP_PROP_FPS, 30.0)
+    if cam.isOpened():  # try to get the first frame
+        rval, frame = cam.read()
+    else:
+        rval = False
+
+    while rval:
+        cv2.namedWindow(previewName, cv2.WND_PROP_FULLSCREEN)
+        cv2.setWindowProperty(previewName, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        cv2.imshow(previewName, frame)
+        rval, frame = cam.read()
+        key = cv2.waitKey(20)
+        if event.is_set():
+            break
+    cv2.destroyWindow(previewName)
 
 # Create two threads as follows
 
@@ -163,32 +191,10 @@ class Window(Tk):
         self.action2 = 'action2'
         self.firePlaceYellow = 'firePlaceYellow'
         self.firePlaceRed = 'firePlaceRed'
-        self.should_stop = False
-
-        # Run the v4l2-ctl command and capture the output
-        command = "v4l2-ctl --list-devices"
-        output = subprocess.check_output(command, shell=True, text=True)
-
-        # Define a regular expression to extract the relevant information
-        pattern = re.compile(r"webcamproduct: usb-webcam \(usb-0000:00:15\.0-(\d+\.\d+\.\d+|\d+\.\d+)\):\s+\/dev\/video(\d+)")
-
-        # Find all matches in the output
-        matches = pattern.findall(output)
-
-        # Create a dictionary with the extracted information
-        self.result_dict = defaultdict(lambda: 'NO_CAMERA_FOUND')
-        for match in matches:
-            key = match[0]
-            value = f"/dev/video{match[1]}"
-            if key in self.result_dict:
-                self.result_dict[key].append(value)
-            else:
-                self.result_dict[key] = [value]
-            self.result_dict[key] = str(self.result_dict[key])[2:-2]
 
         self.roomKeys = {
             self.room1: {
-                self.camera: self.result_dict["6.1"],
+                self.camera: 2,
                 self.generalLight: 40,
                 self.roomLight: 49,
                 self.smokeName: 7,
@@ -200,7 +206,7 @@ class Window(Tk):
                 self.action2: 13
             },
             self.room2: {
-                self.camera: self.result_dict["1.1.2"],
+                self.camera: 0,
                 self.generalLight: 41,
                 self.roomLight: 18,
                 self.smokeName: 8,
@@ -214,7 +220,7 @@ class Window(Tk):
                 self.action1: 19,
             },
             self.room3: {
-                self.camera: self.result_dict["6.2"],
+                self.camera: 5,
                 self.generalLight: 42,
                 self.roomLight: 50,
                 self.detection: 8,
@@ -226,7 +232,7 @@ class Window(Tk):
                 self.action2: 21
             },
             self.room4: {
-                self.camera: self.result_dict["1.1.1"],
+                self.camera: 4,
                 self.generalLight: 43,
                 self.roomLight: 51,
                 self.smokeName: 6,
@@ -239,7 +245,7 @@ class Window(Tk):
                 self.action1: 27,
             },
             self.room5: {
-                self.camera: self.result_dict["1.1.3"],
+                self.camera: 3,
                 self.generalLight: 44,
                 self.roomLight: 52,
                 self.smokeName: 10,
@@ -249,7 +255,7 @@ class Window(Tk):
                 self.action1: 29,
             },
             self.room6: {
-                self.camera: self.result_dict["6.3"],
+                self.camera: 1,
                 self.generalLight: 45,
                 self.roomLight: 53,
                 self.smokeName: 9,
@@ -295,7 +301,7 @@ class Window(Tk):
         self.fireCount = 0;
         self.volume = 50;
         self.keyboard = Controller()
-        self.arduino = serial.Serial(port='/dev/ttyUSB0', baudrate=57600)
+        self.arduino = serial.Serial(port='COM10', baudrate=57600)
         self.loop = loop
         self.name = 'frame'
         self.status = False
@@ -751,34 +757,28 @@ class Window(Tk):
 
     async def camEnable(self, camName, cam):
         self.switchCam(cam)
-        previewName = 'camera'
+        print(camName)
+        for smokeVal in self.cams:
+            smokeVal["state"]="disabled"
+        num = randrange(1000000)
+        print('cur:' + str(num))
         try:
-            print(camName)
-            cap = cv2.VideoCapture(camName)
-            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1024)
-            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
-            self.should_stop = not self.should_stop
-            current = self.should_stop
-            await asyncio.sleep(.5)# Allow event loop to run
-            while True:
-                check, frame = cap.read()  # non-blocking
-                if check:
-                    cv2.namedWindow(previewName, cv2.WND_PROP_FULLSCREEN)
-                    cv2.setWindowProperty(previewName, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-                    cv2.moveWindow(previewName, 1024, 0)
-                    cv2.imshow(previewName, frame)
-                    cv2.waitKey(1)
-                    if current != self.should_stop:
-                        break
-                await asyncio.sleep(0)  # Allow event loop to run
-        except Exception as e:
-            print(f"Error: {e}")
-            cv2.destroyAllWindows()
-        finally:
-            # Close the OpenCV window
-            cv2.destroyAllWindows()
-            # You may or may not need to release the camera, depending on the AsyncCamera implementation
-            # cap.release()
+            prev = getattr(self, 'prev')
+            print('prev:'+str(prev))
+            getattr(self, str(prev)+'_event').set()
+        except:
+            print('gas')
+        setattr(self, 'prev', num)
+        prevEvent = str(num)+'_event'
+        setattr(self, prevEvent, Event())
+        setattr(self, str(num), camThread("Camera 1", camName, getattr(self, prevEvent)))
+        getattr(self, str(num)).start()
+        print('started')
+        await asyncio.sleep(3)
+        for smokeVal in self.cams:
+            smokeVal["state"]="active"
+
+
 
     async def scenary_action_1(self, btn):
         self.change_img(btn)
@@ -1322,22 +1322,19 @@ class Window(Tk):
         self.change_img(panel)
         status = 0 if panel.status == 0 else 255
         if status == 0:
-            self.ledSerial('LEDWRITE', index, 0)
+            self.ledSerial('LEDWRITE',index, 0)
         else:
             self.blink(index, 200, 200)
         print('alarm' + str(index))
-
     async def volumeDown(self):
-        call(["amixer", "-D", "pulse", "sset", "Master", "5%-"])
+        self.keyboard.press(Key.media_volume_down)
 
 
     async def volumeUp(self):
-        call(["amixer", "-D", "pulse", "sset", "Master", "5%+"])
-
+        self.keyboard.press(Key.media_volume_up)
 
 
 def main():
     asyncio.run(App().exec())
-
 
 main()
