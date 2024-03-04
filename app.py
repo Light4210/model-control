@@ -1,6 +1,5 @@
 import re
 import subprocess
-import threading
 from collections import defaultdict
 from tkinter import *
 import asyncio
@@ -9,7 +8,7 @@ import serial
 from PIL import ImageTk, Image
 from pygame import mixer
 import cv2
-from pynput.keyboard import Key, Controller
+from pynput.keyboard import Controller
 from subprocess import call
 
 mixer.init()
@@ -26,13 +25,10 @@ balonFire = mixer.Sound('balon.mp3')
 preFire = mixer.Sound('child_pre_fire.mp3')
 spark = mixer.Sound('spark.mp3')
 
-# Create two threads as follows
-
 class App:
     async def exec(self):
         self.window = Window(asyncio.get_event_loop())
         await self.window.show()
-
 
 class WD_Images(Tk):
     def __init__(self, root):
@@ -170,9 +166,9 @@ class Window(Tk):
         output = subprocess.check_output(command, shell=True, text=True)
 
         # Define a regular expression to extract the relevant information
-        pattern = re.compile(r"webcamproduct: usb-webcam \(usb-0000:00:15\.0-(\d+\.\d+\.\d+|\d+\.\d+)\):\s+\/dev\/video(\d+)")
+        pattern = re.compile(r"webcamproduct: usb-webcam \(usb-0000:00:14\.0-(\d+\.\d+\.\d+|\d+\.\d+)\):\s+\/dev\/video(\d+)")
 
-        # Find all matches in the output
+        # Find all matches in the output N``
         matches = pattern.findall(output)
 
         # Create a dictionary with the extracted information
@@ -188,7 +184,7 @@ class Window(Tk):
 
         self.roomKeys = {
             self.room1: {
-                self.camera: self.result_dict["6.1"],
+                self.camera: self.result_dict["3.1.1"],
                 self.generalLight: 40,
                 self.roomLight: 49,
                 self.smokeName: 7,
@@ -200,7 +196,7 @@ class Window(Tk):
                 self.action2: 13
             },
             self.room2: {
-                self.camera: self.result_dict["1.1.2"],
+                self.camera: self.result_dict["3.1.2"],
                 self.generalLight: 41,
                 self.roomLight: 18,
                 self.smokeName: 8,
@@ -214,7 +210,7 @@ class Window(Tk):
                 self.action1: 19,
             },
             self.room3: {
-                self.camera: self.result_dict["6.2"],
+                self.camera: self.result_dict["3.1.3"],
                 self.generalLight: 42,
                 self.roomLight: 50,
                 self.detection: 8,
@@ -226,7 +222,7 @@ class Window(Tk):
                 self.action2: 21
             },
             self.room4: {
-                self.camera: self.result_dict["1.1.1"],
+                self.camera: self.result_dict["3.1.4"],
                 self.generalLight: 43,
                 self.roomLight: 51,
                 self.smokeName: 6,
@@ -239,7 +235,7 @@ class Window(Tk):
                 self.action1: 27,
             },
             self.room5: {
-                self.camera: self.result_dict["1.1.3"],
+                self.camera: self.result_dict["3.2"],
                 self.generalLight: 44,
                 self.roomLight: 52,
                 self.smokeName: 10,
@@ -249,7 +245,7 @@ class Window(Tk):
                 self.action1: 29,
             },
             self.room6: {
-                self.camera: self.result_dict["6.3"],
+                self.camera: self.result_dict["3.3"],
                 self.generalLight: 45,
                 self.roomLight: 53,
                 self.smokeName: 9,
@@ -272,7 +268,7 @@ class Window(Tk):
                 self.roomLight: 36,
             },
             self.room10: {
-                self.camera: 3,
+                self.camera: self.result_dict["3.4"],
                 self.generalLight: 54,
                 self.smokeName: 11,
                 self.fireRed: 38,
@@ -292,8 +288,6 @@ class Window(Tk):
         self.balonFireStatus = 0
         self.preFireStatus = 0
 
-        self.fireCount = 0;
-        self.volume = 50;
         self.keyboard = Controller()
         self.arduino = serial.Serial(port='/dev/ttyUSB0', baudrate=57600)
         self.loop = loop
@@ -582,6 +576,7 @@ class Window(Tk):
         self.btnTorch.place(x=350, y=158)
         self.btnHair5.place(x=915, y=212)  # floor 3 l
         self.btnFan1.place(x=550, y=505)  # floor 3 l
+        self.btnFan2.place(x=80, y=505)  # floor 3 l
         self.btnBalon.place(x=915, y=505)  # floor 3 l
         self.btnHot.place(x=915, y=450)  # floor 3 l
         self.btnKotel.place(x=350, y=353)  # floor 3 l
@@ -605,6 +600,7 @@ class Window(Tk):
         self.btnLed3.place(x=470, y=212)  # floor 3 l
         self.btnLed4.place(x=470, y=353)  # floor 3 l
         self.btnLed7.place(x=470, y=505)  # floor 3 l
+        self.btnLed9.place(x=20, y=390)  # floor 3 l
 
         self.btnLight0.place(x=295, y=212)  # floor 3 l
         self.btnLight1.place(x=805, y=212)  # floor 3 l
@@ -622,6 +618,7 @@ class Window(Tk):
 
         self.btnSmoke0.place(x=350, y=212)  # floor 3 l
         self.btnSmoke1.place(x=860, y=212)  # floor 3 l
+        self.btnSmoke2.place(x=80, y=450)  # floor 3 l
         self.btnSmoke3.place(x=860, y=353)  # floor 3 l
         self.btnSmoke4.place(x=350, y=505)  # floor 3 l
         self.btnSmoke5.place(x=860, y=505)  # floor 3 l
@@ -632,12 +629,14 @@ class Window(Tk):
         self.btnCam4.place(x=697, y=299)
         self.btnCam5.place(x=185, y=450)
         self.btnCam6.place(x=697, y=450)
+        self.btnCam7.place(x=80, y=390)
 
         self.btnFire1.place(x=240, y=158)
         self.btnFire2.place(x=750, y=158)
         self.btnFire3.place(x=240, y=450)
         self.btnFire4.place(x=750, y=299)
         self.btnFire6.place(x=750, y=450)
+        self.btnFire7.place(x=20, y=450)
 
         self.btnAlarm1.place(x=295, y=158)
         self.btnAlarm2.place(x=805, y=158)
@@ -645,6 +644,7 @@ class Window(Tk):
         self.btnAlarm4.place(x=240, y=299)
         self.btnAlarm5.place(x=805, y=299)
         self.btnAlarm6.place(x=805, y=450)
+        self.btnAlarm7.place(x=20, y=505)
 
         self.btnHair6.place(x=295, y=299)
 
@@ -659,6 +659,7 @@ class Window(Tk):
         time.sleep(3)
         self.cams = [self.btnCam6, self.btnCam5, self.btnCam4, self.btnCam3, self.btnCam2, self.btnCam1, self.btnCam7]
         self.smokes = [self.btnSmoke5, self.btnSmoke4, self.btnSmoke3, self.btnSmoke2, self.btnSmoke0, self.btnSmoke1]
+
 
     def smokeSerial(self, param1, time=1300):
         string = "<SMOKE" + "\0" + str(param1) + "\0" + str(time) + ">"
@@ -751,6 +752,7 @@ class Window(Tk):
 
     async def camEnable(self, camName, cam):
         self.switchCam(cam)
+        await asyncio.sleep(.5)  # Allow event loop to run
         previewName = 'camera'
         try:
             print(camName)
