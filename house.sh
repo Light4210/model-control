@@ -2,5 +2,7 @@
 
 cd /home/dim/model-control
 xinput map-to-output 20 HDMI-1
-sleep 7
+sleep 6
+chmod 777 /dev/ttyUSB0
+sleep 1
 python3 /home/dim/model-control/app.py

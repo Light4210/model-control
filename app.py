@@ -751,6 +751,8 @@ class Window(Tk):
             camInstance["state"] = "disable"
 
     async def camEnable(self, camName, cam):
+        print("====BEGIN")
+        self.should_stop = not self.should_stop
         self.switchCam(cam)
         await asyncio.sleep(.5)  # Allow event loop to run
         previewName = 'camera'
@@ -759,8 +761,10 @@ class Window(Tk):
             cap = cv2.VideoCapture(camName)
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1024)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
-            self.should_stop = not self.should_stop
             current = self.should_stop
+            print("=========")
+            print(self.should_stop)
+            print("=========")
             await asyncio.sleep(.5)# Allow event loop to run
             while True:
                 check, frame = cap.read()  # non-blocking
@@ -775,12 +779,6 @@ class Window(Tk):
                 await asyncio.sleep(0)  # Allow event loop to run
         except Exception as e:
             print(f"Error: {e}")
-            cv2.destroyAllWindows()
-        finally:
-            # Close the OpenCV window
-            cv2.destroyAllWindows()
-            # You may or may not need to release the camera, depending on the AsyncCamera implementation
-            # cap.release()
 
     async def scenary_action_1(self, btn):
         self.change_img(btn)
@@ -790,44 +788,44 @@ class Window(Tk):
             scen["state"] = "disable"
         self.btnScenary["state"] = "disable"
         ##############
-        await asyncio.sleep(4)
+        await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.roomLight], 255)
-        await asyncio.sleep(7)
+        await asyncio.sleep(.1)
         await self.soundPreFire()
-        await asyncio.sleep(1)
+        await asyncio.sleep(.1)
         await self.soundChildFire()
-        await asyncio.sleep(1)
+        await asyncio.sleep(.1)
         self.fireSerial(self.roomKeys[self.room6][self.fireRed], self.roomKeys[self.room6][self.fireYellow])
-        await asyncio.sleep(3)
+        await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.roomLight], 0)
-        await asyncio.sleep(1)
+        await asyncio.sleep(.1)
         self.smokeSerial(self.roomKeys[self.room6][self.smokeName])
-        await asyncio.sleep(4)
+        await asyncio.sleep(.1)
         await self.sound()
         self.blink(self.roomKeys[self.room6][self.signal], 200, 200)
         await self.soundPreFire()
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.action1], 0)
-        await asyncio.sleep(3)
+        await asyncio.sleep(.1)
         self.servo('SERVOOPEN', self.roomKeys[self.room6][self.doorName])
         await asyncio.sleep(.1)
         await self.fan(1, self.btnFan1)
-        await asyncio.sleep(10)
+        await asyncio.sleep(.1)
         await self.soundChildFire()
         await self.sound()
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.signal], 0)
-        await asyncio.sleep(.5)
+        await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.fireRed], 0)
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.fireYellow], 0)
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.roomLight], 255)
-        await asyncio.sleep(60)
-        await asyncio.sleep(.5)
+        await asyncio.sleep(.1)
+        await asyncio.sleep(.1)
         self.servo('SERVOCLOSE', self.roomKeys[self.room6][self.doorName])
         await asyncio.sleep(.5)
         await self.fan(1, self.btnFan1)
-        await asyncio.sleep(.5)
+        await asyncio.sleep(.1)
         self.default()
         for scen in self.scenaries:
             scen["state"] = "active"
