@@ -182,10 +182,11 @@ class Window(Tk):
         self.action2 = 'action2'
         self.firePlaceYellow = 'firePlaceYellow'
         self.firePlaceRed = 'firePlaceRed'
+        self.should_stop = False
 
         self.roomKeys = {
             self.room1: {
-                self.camera: 6,
+                self.camera: 4,
                 self.generalLight: 40,
                 self.roomLight: 49,
                 self.smokeName: 7,
@@ -197,7 +198,7 @@ class Window(Tk):
                 self.action2: 13
             },
             self.room2: {
-                self.camera: 0,
+                self.camera: 6,
                 self.generalLight: 41,
                 self.roomLight: 18,
                 self.smokeName: 8,
@@ -211,7 +212,7 @@ class Window(Tk):
                 self.action1: 19,
             },
             self.room3: {
-                self.camera: 5,
+                self.camera: 1,
                 self.generalLight: 42,
                 self.roomLight: 50,
                 self.detection: 8,
@@ -223,7 +224,7 @@ class Window(Tk):
                 self.action2: 21
             },
             self.room4: {
-                self.camera: 1,
+                self.camera: 0,
                 self.generalLight: 43,
                 self.roomLight: 51,
                 self.smokeName: 6,
@@ -236,7 +237,7 @@ class Window(Tk):
                 self.action1: 27,
             },
             self.room5: {
-                self.camera: 4,
+                self.camera: 5,
                 self.generalLight: 44,
                 self.roomLight: 52,
                 self.smokeName: 10,
@@ -627,29 +628,30 @@ class Window(Tk):
             camInstance["state"] = "disable"
 
     async def camEnable(self, camName, cam):
+        self.should_stop = not self.should_stop
         self.switchCam(cam)
-        print(camName)
-        for smokeVal in self.cams:
-            smokeVal["state"]="disabled"
-        num = randrange(1000000)
-        print('cur:' + str(num))
+        await asyncio.sleep(0.5)
+        previewName = 'camera'
         try:
-            prev = getattr(self, 'prev')
-            print('prev:'+str(prev))
-            getattr(self, str(prev)+'_event').set()
-        except:
-            print('gas')
-        setattr(self, 'prev', num)
-        prevEvent = str(num)+'_event'
-        setattr(self, prevEvent, Event())
-        setattr(self, str(num), camThread("Camera 1", camName, getattr(self, prevEvent)))
-        getattr(self, str(num)).start()
-        print('started')
-        await asyncio.sleep(3)
-        for smokeVal in self.cams:
-            smokeVal["state"]="active"
-
-
+            print(camName)
+            cap = cv2.VideoCapture(camName)
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1024)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
+            current = self.should_stop
+            await asyncio.sleep(.5)
+            while True:
+                check, frame = cap.read()
+                if check:
+                    cv2.namedWindow(previewName, cv2.WND_PROP_FULLSCREEN)
+                    cv2.setWindowProperty(previewName, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+                    cv2.moveWindow(previewName, 1024, 0)
+                    cv2.imshow(previewName, frame)
+                    cv2.waitKey(1)
+                    if current != self.should_stop:
+                        break
+                await asyncio.sleep(0)
+        except Exception as e:
+            print(f'Error: {e}')
 
     async  def scenary_action_1(self, btn):
         self.change_img(btn)
