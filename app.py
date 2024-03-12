@@ -160,6 +160,7 @@ class Window(Tk):
         self.firePlaceYellow = 'firePlaceYellow'
         self.firePlaceRed = 'firePlaceRed'
         self.should_stop = False
+        self.smokeTime = 'SmokeTime'
 
         # Run the v4l2-ctl command and capture the output
         command = "v4l2-ctl --list-devices"
@@ -193,13 +194,14 @@ class Window(Tk):
                 self.fireRed: 10,
                 self.fireYellow: 11,
                 self.action1: 12,
-                self.action2: 13
+                self.action2: 13,
+                self.smokeTime: 1300
             },
             self.room2: {
                 self.camera: self.result_dict["3.1.2"],
                 self.generalLight: 41,
                 self.roomLight: 18,
-                self.smokeName: 8,
+                self.smokeName: 10,
                 self.doorName: 1,
                 self.detection: 7,
                 self.signal: 1,
@@ -208,6 +210,7 @@ class Window(Tk):
                 self.fireRed: 14,
                 self.fireYellow: 15,
                 self.action1: 19,
+                self.smokeTime: 1600
             },
             self.room3: {
                 self.camera: self.result_dict["3.1.3"],
@@ -219,7 +222,8 @@ class Window(Tk):
                 self.fireRed: 10,
                 self.fireYellow: 11,
                 self.action1: 20,
-                self.action2: 21
+                self.action2: 21,
+                self.smokeTime: 1300
             },
             self.room4: {
                 self.camera: self.result_dict["3.1.4"],
@@ -233,16 +237,18 @@ class Window(Tk):
                 self.firePlaceRed: 24,
                 self.firePlaceYellow: 25,
                 self.action1: 27,
+                self.smokeTime: 1800
             },
             self.room5: {
                 self.camera: self.result_dict["3.2"],
                 self.generalLight: 44,
                 self.roomLight: 52,
-                self.smokeName: 10,
+                self.smokeName: 11,
                 self.doorName: 5,
                 self.signal: 4,
                 self.fireRed: 28,
                 self.action1: 29,
+                self.smokeTime: 1400
             },
             self.room6: {
                 self.camera: self.result_dict["3.3"],
@@ -254,6 +260,7 @@ class Window(Tk):
                 self.fireRed: 30,
                 self.fireYellow: 31,
                 self.action1: 32,
+                self.smokeTime: 1800
             },
             self.room7: {
                 self.generalLight: 48,
@@ -270,10 +277,11 @@ class Window(Tk):
             self.room10: {
                 self.camera: self.result_dict["3.4"],
                 self.generalLight: 54,
-                self.smokeName: 11,
+                self.smokeName: 8,
                 self.fireRed: 38,
                 self.fireYellow: 39,
-                self.action1: 37
+                self.action1: 37,
+                self.smokeTime: 5000
 
             }
         }
@@ -403,28 +411,28 @@ class Window(Tk):
 
         self.btnSmoke0 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
                                              lambda: self.loop.create_task(
-                                                 self.smoke(self.roomKeys[self.room5][self.smokeName], self.btnSmoke0)),
-                                             0)
+                                                 self.smoke(self.roomKeys[self.room5][self.smokeName], self.btnSmoke0,
+                                                    self.roomKeys[self.room5][self.smokeTime])), 0)
         self.btnSmoke1 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
                                              lambda: self.loop.create_task(
-                                                 self.smoke(self.roomKeys[self.room6][self.smokeName], self.btnSmoke1)),
-                                             0)
+                                                 self.smoke(self.roomKeys[self.room6][self.smokeName], self.btnSmoke1,
+                                                    self.roomKeys[self.room6][self.smokeTime])), 0)
         self.btnSmoke2 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
                                              lambda: self.loop.create_task(
                                                  self.smoke(self.roomKeys[self.room10][self.smokeName], self.btnSmoke2,
-                                                            2000)), 0)
+                                                    self.roomKeys[self.room10][self.smokeTime])), 0)
         self.btnSmoke3 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
                                              lambda: self.loop.create_task(
-                                                 self.smoke(self.roomKeys[self.room4][self.smokeName], self.btnSmoke3)),
-                                             0)
+                                                 self.smoke(self.roomKeys[self.room4][self.smokeName], self.btnSmoke3,
+                                                    self.roomKeys[self.room4][self.smokeTime])), 0)
         self.btnSmoke4 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
                                              lambda: self.loop.create_task(
-                                                 self.smoke(self.roomKeys[self.room1][self.smokeName], self.btnSmoke4)),
-                                             0)
+                                                 self.smoke(self.roomKeys[self.room1][self.smokeName], self.btnSmoke4,
+                                                    self.roomKeys[self.room1][self.smokeTime])), 0)
         self.btnSmoke5 = self.btn_father.btn(self.img_father.smoke, self.img_father.smoke_active,
                                              lambda: self.loop.create_task(
-                                                 self.smoke(self.roomKeys[self.room2][self.smokeName], self.btnSmoke5)),
-                                             0)
+                                                 self.smoke(self.roomKeys[self.room2][self.smokeName], self.btnSmoke5,
+                                                    self.roomKeys[self.room1][self.smokeTime])), 0)
 
         self.btnCam1 = self.btn_father.btn(self.img_father.cam, self.img_father.cam_active,
                                            lambda: self.loop.create_task(
@@ -788,44 +796,44 @@ class Window(Tk):
             scen["state"] = "disable"
         self.btnScenary["state"] = "disable"
         ##############
-        await asyncio.sleep(.1)
+        await asyncio.sleep(4)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.roomLight], 255)
-        await asyncio.sleep(.1)
+        await asyncio.sleep(7)
         await self.soundPreFire()
-        await asyncio.sleep(.1)
+        await asyncio.sleep(1)
         await self.soundChildFire()
-        await asyncio.sleep(.1)
+        await asyncio.sleep(1)
         self.fireSerial(self.roomKeys[self.room6][self.fireRed], self.roomKeys[self.room6][self.fireYellow])
-        await asyncio.sleep(.1)
+        await asyncio.sleep(3)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.roomLight], 0)
-        await asyncio.sleep(.1)
-        self.smokeSerial(self.roomKeys[self.room6][self.smokeName])
-        await asyncio.sleep(.1)
+        await asyncio.sleep(1)
+        self.smokeSerial(self.roomKeys[self.room6][self.smokeName], self.roomKeys[self.room6][self.smokeTime])
+        await asyncio.sleep(4)
         await self.sound()
         self.blink(self.roomKeys[self.room6][self.signal], 200, 200)
         await self.soundPreFire()
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.action1], 0)
-        await asyncio.sleep(.1)
+        await asyncio.sleep(3)
         self.servo('SERVOOPEN', self.roomKeys[self.room6][self.doorName])
         await asyncio.sleep(.1)
         await self.fan(1, self.btnFan1)
-        await asyncio.sleep(.1)
+        await asyncio.sleep(10)
         await self.soundChildFire()
         await self.sound()
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.signal], 0)
-        await asyncio.sleep(.1)
+        await asyncio.sleep(.5)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.fireRed], 0)
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.fireYellow], 0)
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room6][self.roomLight], 255)
-        await asyncio.sleep(.1)
-        await asyncio.sleep(.1)
+        await asyncio.sleep(60)
+        await asyncio.sleep(.5)
         self.servo('SERVOCLOSE', self.roomKeys[self.room6][self.doorName])
         await asyncio.sleep(.5)
         await self.fan(1, self.btnFan1)
-        await asyncio.sleep(.1)
+        await asyncio.sleep(.5)
         self.default()
         for scen in self.scenaries:
             scen["state"] = "active"
@@ -850,7 +858,7 @@ class Window(Tk):
         await asyncio.sleep(4)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room2][self.roomLight], 0)
         await asyncio.sleep(.5)
-        self.smokeSerial(self.roomKeys[self.room2][self.smokeName])
+        self.smokeSerial(self.roomKeys[self.room2][self.smokeName], self.roomKeys[self.room2][self.smokeTime])
         await asyncio.sleep(4)
         await self.sound()
         self.blink(self.roomKeys[self.room2][self.signal], 200, 200)
@@ -907,7 +915,7 @@ class Window(Tk):
         await asyncio.sleep(2)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room5][self.roomLight], 0)
         await asyncio.sleep(1)
-        self.smokeSerial(self.roomKeys[self.room5][self.smokeName])
+        self.smokeSerial(self.roomKeys[self.room5][self.smokeName], self.roomKeys[self.room5][self.smokeTime])
         await asyncio.sleep(4)
         self.blink(self.roomKeys[self.room5][self.signal], 200, 200)
         await self.sound()
@@ -1036,7 +1044,7 @@ class Window(Tk):
         await asyncio.sleep(3)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room4][self.roomLight], 0)
         await asyncio.sleep(1)
-        self.smokeSerial(self.roomKeys[self.room4][self.smokeName])
+        self.smokeSerial(self.roomKeys[self.room4][self.smokeName], self.roomKeys[self.room4][self.smokeTime])
         await asyncio.sleep(4)
         await self.soundSpark()
         await asyncio.sleep(.1)
@@ -1088,7 +1096,7 @@ class Window(Tk):
         await asyncio.sleep(3)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room1][self.roomLight], 0)
         await asyncio.sleep(1)
-        self.smokeSerial(self.roomKeys[self.room1][self.smokeName])
+        self.smokeSerial(self.roomKeys[self.room1][self.smokeName], self.roomKeys[self.room1][self.smokeTime])
         await asyncio.sleep(10)
         self.fireSerialSingle(self.roomKeys[self.room1][self.fireYellow])
         await asyncio.sleep(1)
@@ -1133,12 +1141,10 @@ class Window(Tk):
         ##############
         await asyncio.sleep(4)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room10][self.generalLight], 255)
-        await asyncio.sleep(4)
-        self.ledSerial('LEDWRITE', self.roomKeys[self.room10][self.generalLight], 0)
-        await asyncio.sleep(3)
+        await asyncio.sleep(7)
         self.fireSerialSingle(self.roomKeys[self.room10][self.action1])
         await asyncio.sleep(5)
-        self.smokeSerial(self.roomKeys[self.room10][self.smokeName], 5000)
+        self.smokeSerial(self.roomKeys[self.room10][self.smokeName], self.roomKeys[self.room10][self.smokeTime])
         await asyncio.sleep(8)
         await self.fireFighterSound()
         await self.alarmFireTruck(self.roomKeys[self.room10][self.fireRed], self.roomKeys[self.room10][self.fireYellow],
@@ -1151,7 +1157,7 @@ class Window(Tk):
         self.ledSerial('LEDWRITE', self.roomKeys[self.room10][self.fireRed], 0)
         await asyncio.sleep(.1)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room10][self.fireYellow], 0)
-        await asyncio.sleep(60)
+        await asyncio.sleep(30)
         await asyncio.sleep(.5)
         await self.fan(2, self.btnFan2)
         await asyncio.sleep(.5)
@@ -1199,7 +1205,12 @@ class Window(Tk):
                                                400, 50)
         self.scenary5.place(x=300, y=380)  # floor 3 l
 
-        self.scenaries = [self.scenary1, self.scenary2, self.scenary3, self.scenary4, self.scenary5]
+        self.scenary6 = self.btn_father_sc.btn(self.img_father.scenary_6, self.img_father.scenary_active_6,
+                                               lambda: self.loop.create_task(self.scenary_action_6(self.scenary6)), 0,
+                                               400, 50)
+        self.scenary6.place(x=300, y=450)  # floor 3 l
+
+        self.scenaries = [self.scenary1, self.scenary2, self.scenary3, self.scenary4, self.scenary5, self.scenary6]
 
         self.btnScenary = self.btn_father_sc.btn(self.img_father.scenary_btn, self.img_father.scenary_btn,
                                                  lambda: self.loop.create_task(self.scenary_close()), 0, 222, 46)
