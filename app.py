@@ -816,7 +816,7 @@ class Window(Tk):
         await asyncio.sleep(3)
         self.servo('SERVOOPEN', self.roomKeys[self.room6][self.doorName])
         await asyncio.sleep(.1)
-        await self.fan(1, self.btnFan1)
+        await self.fan(1, self.btnFan1, True)
         await asyncio.sleep(10)
         await self.soundChildFire()
         await self.sound()
@@ -873,7 +873,7 @@ class Window(Tk):
         await self.soundBalonFire()
         self.servo('SERVOOPEN', self.roomKeys[self.room2][self.doorName])
         await asyncio.sleep(1)
-        await self.fan(1, self.btnFan1)
+        await self.fan(1, self.btnFan1, True)
         await asyncio.sleep(10)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room2][self.signal], 0)
         await asyncio.sleep(.1)
@@ -922,7 +922,7 @@ class Window(Tk):
         await asyncio.sleep(3)
         self.servo('SERVOOPEN', self.roomKeys[self.room5][self.doorName])
         await asyncio.sleep(1)
-        await self.fan(1, self.btnFan1)
+        await self.fan(1, self.btnFan1, True)
         await asyncio.sleep(10)
         await self.sound()
         await self.soundSleepFire()
@@ -1053,7 +1053,7 @@ class Window(Tk):
         await asyncio.sleep(3)
         self.servo('SERVOOPEN', self.roomKeys[self.room4][self.doorName])
         await asyncio.sleep(.2)
-        await self.fan(1, self.btnFan1)
+        await self.fan(1, self.btnFan1, True)
         await asyncio.sleep(10)
         await self.sound()
         await asyncio.sleep(.1)
@@ -1107,7 +1107,7 @@ class Window(Tk):
         await asyncio.sleep(1)
         self.servo('SERVOOPEN', self.roomKeys[self.room1][self.doorName])
         await asyncio.sleep(1)
-        await self.fan(1, self.btnFan1)
+        await self.fan(1, self.btnFan1, True)
         await asyncio.sleep(10)
         await self.sound()
         await asyncio.sleep(.5)
@@ -1142,6 +1142,7 @@ class Window(Tk):
         await asyncio.sleep(4)
         self.ledSerial('LEDWRITE', self.roomKeys[self.room10][self.generalLight], 255)
         await asyncio.sleep(7)
+        await self.soundKotelFire()
         self.fireSerialSingle(self.roomKeys[self.room10][self.action1])
         await asyncio.sleep(5)
         self.smokeSerial(self.roomKeys[self.room10][self.smokeName], self.roomKeys[self.room10][self.smokeTime])
@@ -1150,13 +1151,13 @@ class Window(Tk):
         await self.alarmFireTruck(self.roomKeys[self.room10][self.fireRed], self.roomKeys[self.room10][self.fireYellow],
                                   self.btnAlarm7)
         await asyncio.sleep(10)
-        await self.fan(2, self.btnFan2)
+        await self.soundKotelFire()
+        await self.fan(2, self.btnFan2, True)
         await asyncio.sleep(10)
         await self.fireFighterSound()
         await asyncio.sleep(.1)
-        self.ledSerial('LEDWRITE', self.roomKeys[self.room10][self.fireRed], 0)
-        await asyncio.sleep(.1)
-        self.ledSerial('LEDWRITE', self.roomKeys[self.room10][self.fireYellow], 0)
+        await self.alarmFireTruck(self.roomKeys[self.room10][self.fireRed], self.roomKeys[self.room10][self.fireYellow],
+                                  self.btnAlarm7)
         await asyncio.sleep(30)
         await asyncio.sleep(.5)
         await self.fan(2, self.btnFan2)
@@ -1249,9 +1250,9 @@ class Window(Tk):
         status = 0 if light.status == 0 else 255
         self.ledSerial("LEDWRITE", index, status)
 
-    async def fan(self, num, fan):
+    async def fan(self, num, fan, bForceOn = False):
         self.change_img(fan)
-        comand = 'FAN' + str(num) + 'OFF' if fan.status == 0 else 'FAN' + str(num) + 'ON'
+        comand = 'FAN' + str(num) + 'OFF' if fan.status == 0 and not(bForceOn) else 'FAN' + str(num) + 'ON'
         self.serialFan(comand)
 
     async def smoke(self, index, smoke, time=1500):
