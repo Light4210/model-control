@@ -160,6 +160,7 @@ class Window(Tk):
         self.firePlaceYellow = 'firePlaceYellow'
         self.firePlaceRed = 'firePlaceRed'
         self.should_stop = False
+        self.cap = 'cap'
         self.smokeTime = 'SmokeTime'
 
         # Run the v4l2-ctl command and capture the output
@@ -758,6 +759,13 @@ class Window(Tk):
             self.change_img(camInstance)
             camInstance["state"] = "disable"
 
+    def camDisable(self):
+        if hasattr(self,  'cap'):
+            self.cap.release()
+            cv2.waitKey(1)
+            cv2.destroyAllWindows()
+
+
     async def camEnable(self, camName, cam):
         print("====BEGIN")
         self.should_stop = not self.should_stop
@@ -766,16 +774,16 @@ class Window(Tk):
         previewName = 'camera'
         try:
             print(camName)
-            cap = cv2.VideoCapture(camName)
-            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1024)
-            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
+            self.cap = cv2.VideoCapture(camName)
+            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1024)
+            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
             current = self.should_stop
             print("=========")
             print(self.should_stop)
             print("=========")
             await asyncio.sleep(.5)# Allow event loop to run
             while True:
-                check, frame = cap.read()  # non-blocking
+                check, frame = self.cap.read()  # non-blocking
                 if check:
                     cv2.namedWindow(previewName, cv2.WND_PROP_FULLSCREEN)
                     cv2.setWindowProperty(previewName, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
@@ -834,6 +842,7 @@ class Window(Tk):
         await asyncio.sleep(.5)
         await self.fan(1, self.btnFan1)
         await asyncio.sleep(.5)
+        self.camDisable()
         self.default()
         for scen in self.scenaries:
             scen["state"] = "active"
@@ -891,6 +900,7 @@ class Window(Tk):
         await asyncio.sleep(.5)
         await self.fan(1, self.btnFan1)
         await asyncio.sleep(.5)
+        self.camDisable()
         self.default()
         for scen in self.scenaries:
             scen["state"] = "active"
@@ -938,6 +948,7 @@ class Window(Tk):
         await asyncio.sleep(.5)
         await self.fan(1, self.btnFan1)
         await asyncio.sleep(.5)
+        self.camDisable()
         self.default()
         for scen in self.scenaries:
             scen["state"] = "active"
@@ -1070,6 +1081,7 @@ class Window(Tk):
         await asyncio.sleep(.5)
         await self.fan(1, self.btnFan1)
         await asyncio.sleep(.5)
+        self.camDisable()
         self.default()
         for scen in self.scenaries:
             scen["state"] = "active"
@@ -1125,6 +1137,7 @@ class Window(Tk):
         await asyncio.sleep(.5)
         await self.fan(1, self.btnFan1)
         await asyncio.sleep(.5)
+        self.camDisable()
         self.default()
         for scen in self.scenaries:
             scen["state"] = "active"
@@ -1162,6 +1175,7 @@ class Window(Tk):
         await asyncio.sleep(.5)
         await self.fan(2, self.btnFan2)
         await asyncio.sleep(.5)
+        self.camDisable()
         self.default()
         for scen in self.scenaries:
             scen["state"] = "active"
